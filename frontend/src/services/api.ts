@@ -23,7 +23,16 @@ import {
   AutomationChangeRequestCreateData,
 } from '../types/device';
 
-const API_BASE = '/api';
+const resolveApiBase = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl || typeof envUrl !== 'string' || !envUrl.trim()) {
+    return '/api';
+  }
+  const cleanUrl = envUrl.trim().replace(/\/+$/, '');
+  return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+};
+
+const API_BASE = resolveApiBase();
 
 export class ApiError extends Error {
   public status?: number;
